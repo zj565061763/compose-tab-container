@@ -90,17 +90,19 @@ private class TabContainerImpl : TabContainerScope {
         }
 
         for (item in _activeKeyHolder.keys) {
-            Box(
-                modifier = Modifier
-                    .graphicsLayer {
-                        if (item == key) {
-                            this.scaleX = 1f
-                        } else {
-                            this.scaleX = 0f
+            _contentHolder[item]?.let { content ->
+                Box(
+                    modifier = Modifier
+                        .graphicsLayer {
+                            if (item == key) {
+                                this.scaleX = 1f
+                            } else {
+                                this.scaleX = 0f
+                            }
                         }
-                    }
-            ) {
-                _contentHolder[item]?.value?.invoke()
+                ) {
+                    content.value.invoke()
+                }
             }
         }
     }
