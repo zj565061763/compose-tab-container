@@ -52,14 +52,13 @@ private class TabContainerImpl : TabContainerScope {
     fun startConfig() {
         if (!_configMode) {
             _configMode = true
-            _keyHolder.clear()
         }
     }
 
     fun stopConfig() {
         if (_configMode) {
-            check(_keyHolder.isNotEmpty()) { "You should config tab in TabContainer apply block." }
             _configMode = false
+            check(_keyHolder.isNotEmpty()) { "You should config tab in TabContainer apply block." }
             _tabHolder.iterator().removeIf { !_keyHolder.contains(it.key) }
             _activeKeyHolder.iterator().removeIf { !_keyHolder.contains(it.key) }
             _keyHolder.clear()
