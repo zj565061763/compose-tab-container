@@ -19,7 +19,9 @@ fun TabContainer(
     val container = remember {
         TabContainerImpl()
     }.apply {
+        startConfig()
         apply()
+        stopConfig()
     }
 
     Box(modifier = modifier) {
@@ -35,13 +37,42 @@ interface TabContainerScope {
 }
 
 private class TabContainerImpl : TabContainerScope {
+    private val _keyHolder: MutableSet<Any> = hashSetOf()
     private val _contentHolder: MutableMap<Any, MutableState<@Composable () -> Unit>> = hashMapOf()
     private val _activeKeyHolder: MutableMap<Any, String> = mutableStateMapOf()
+
+    private var _configMode = false
+
+    fun startConfig() {
+        if (!_configMode) {
+            _configMode = true
+            _keyHolder.clear()
+        }
+    }
+
+    fun stopConfig() {
+        if (_configMode) {
+            check(_keyHolder.isNotEmpty()) { "You should config tab in TabContainer apply block." }
+            _configMode = false
+
+            val it = _contentHolder.iterator()
+            while (it.hasNext()) {
+                val item = it.next()
+                if (!_keyHolder.contains(item.key)) {
+                    it.remove()
+                }
+            }
+            _keyHolder.clear()
+        }
+    }
 
     override fun tab(
         key: Any,
         content: @Composable () -> Unit,
     ) {
+        check(_configMode) { "This should be called in TabContainer apply block." }
+        _keyHolder.add(key)
+
         val state = _contentHolder[key]
         if (state == null) {
             _contentHolder[key] = mutableStateOf(content)
