@@ -21,7 +21,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.sd.demo.compose_tab_container.ui.theme.AppTheme
-import com.sd.lib.compose.tab.container.FTabContainer
+import com.sd.lib.compose.tab.container.TabContainer
 import kotlinx.coroutines.delay
 
 class MainActivity : ComponentActivity() {
@@ -62,7 +62,7 @@ private fun Content() {
             }
         }
 
-        FTabContainer(
+        TabContainer(
             modifier = Modifier
                 .fillMaxWidth()
                 .weight(1f),

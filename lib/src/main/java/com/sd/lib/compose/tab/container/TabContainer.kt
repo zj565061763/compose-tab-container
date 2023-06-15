@@ -11,7 +11,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.graphicsLayer
 
 @Composable
-fun FTabContainer(
+fun TabContainer(
     key: Any,
     modifier: Modifier = Modifier,
     apply: TabContainerScope.() -> Unit,
