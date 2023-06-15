@@ -29,16 +29,22 @@ fun TabContainer(
     }
 }
 
+enum class TabDisplay {
+    Default,
+    New,
+}
+
 interface TabContainerScope {
     fun tab(
         key: Any,
+        display: TabDisplay = TabDisplay.Default,
         content: @Composable () -> Unit,
     )
 }
 
 private class TabContainerImpl : TabContainerScope {
     private val _keyHolder: MutableSet<Any> = hashSetOf()
-    private val _contentHolder: MutableMap<Any, MutableState<@Composable () -> Unit>> = hashMapOf()
+    private val _tabHolder: MutableMap<Any, TabInfo> = hashMapOf()
     private val _activeKeyHolder: MutableMap<Any, String> = mutableStateMapOf()
 
     private var _configMode = false
@@ -54,7 +60,7 @@ private class TabContainerImpl : TabContainerScope {
         if (_configMode) {
             check(_keyHolder.isNotEmpty()) { "You should config tab in TabContainer apply block." }
             _configMode = false
-            _contentHolder.iterator().removeIf { !_keyHolder.contains(it.key) }
+            _tabHolder.iterator().removeIf { !_keyHolder.contains(it.key) }
             _activeKeyHolder.iterator().removeIf { !_keyHolder.contains(it.key) }
             _keyHolder.clear()
         }
@@ -62,45 +68,65 @@ private class TabContainerImpl : TabContainerScope {
 
     override fun tab(
         key: Any,
+        display: TabDisplay,
         content: @Composable () -> Unit,
     ) {
         check(_configMode) { "This should be called in TabContainer apply block." }
         _keyHolder.add(key)
 
-        val state = _contentHolder[key]
-        if (state == null) {
-            _contentHolder[key] = mutableStateOf(content)
+        val info = _tabHolder[key]
+        if (info == null) {
+            _tabHolder[key] = TabInfo(
+                contentState = mutableStateOf(content),
+                displayState = mutableStateOf(display),
+            )
         } else {
-            state.value = content
+            info.contentState.value = content
+            info.displayState.value = display
         }
     }
 
     @Composable
     fun Content(key: Any) {
         LaunchedEffect(key) {
-            if (_contentHolder.containsKey(key)) {
+            if (_tabHolder.containsKey(key)) {
                 _activeKeyHolder[key] = ""
             }
         }
 
         for (item in _activeKeyHolder.keys) {
-            _contentHolder[item]?.let { content ->
-                Box(
-                    modifier = Modifier
-                        .graphicsLayer {
-                            if (item == key) {
-                                this.scaleX = 1f
-                            } else {
-                                this.scaleX = 0f
-                            }
+            _tabHolder[item]?.let { info ->
+                when (info.displayState.value) {
+                    TabDisplay.Default -> {
+                        Box(
+                            modifier = Modifier
+                                .graphicsLayer {
+                                    if (item == key) {
+                                        this.scaleX = 1f
+                                    } else {
+                                        this.scaleX = 0f
+                                    }
+                                }
+                        ) {
+                            info.contentState.value.invoke()
                         }
-                ) {
-                    content.value.invoke()
+                    }
+
+                    TabDisplay.New -> {
+                        if (item == key) {
+                            info.contentState.value.invoke()
+                        }
+                    }
                 }
             }
         }
     }
 }
+
+private class TabInfo(
+    val contentState: MutableState<@Composable () -> Unit>,
+    val displayState: MutableState<TabDisplay>,
+)
 
 private inline fun <T> MutableIterator<T>.removeIf(predicate: (T) -> Boolean) {
     while (hasNext()) {

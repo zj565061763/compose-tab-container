@@ -22,6 +22,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.sd.demo.compose_tab_container.ui.theme.AppTheme
 import com.sd.lib.compose.tab.container.TabContainer
+import com.sd.lib.compose.tab.container.TabDisplay
 import kotlinx.coroutines.delay
 
 class MainActivity : ComponentActivity() {
@@ -71,7 +72,7 @@ private fun Content() {
             tab("A") {
                 TabContent(tag = "I am A")
             }
-            tab("B") {
+            tab("B", display = TabDisplay.New) {
                 TabContent(tag = "I am B")
             }
         }
