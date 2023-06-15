@@ -55,13 +55,15 @@ private class TabContainerImpl : TabContainerScope {
             check(_keyHolder.isNotEmpty()) { "You should config tab in TabContainer apply block." }
             _configMode = false
 
-            val it = _contentHolder.iterator()
-            while (it.hasNext()) {
-                val item = it.next()
-                if (!_keyHolder.contains(item.key)) {
-                    it.remove()
+            _contentHolder.iterator().run {
+                while (hasNext()) {
+                    val item = next()
+                    if (!_keyHolder.contains(item.key)) {
+                        remove()
+                    }
                 }
             }
+
             _keyHolder.clear()
         }
     }
