@@ -54,22 +54,8 @@ private class TabContainerImpl : TabContainerScope {
         if (_configMode) {
             check(_keyHolder.isNotEmpty()) { "You should config tab in TabContainer apply block." }
             _configMode = false
-            _contentHolder.iterator().run {
-                while (hasNext()) {
-                    val item = next()
-                    if (!_keyHolder.contains(item.key)) {
-                        remove()
-                    }
-                }
-            }
-            _activeKeyHolder.iterator().run {
-                while (hasNext()) {
-                    val item = next()
-                    if (!_keyHolder.contains(item.key)) {
-                        remove()
-                    }
-                }
-            }
+            _contentHolder.iterator().removeIf { !_keyHolder.contains(it.key) }
+            _activeKeyHolder.iterator().removeIf { !_keyHolder.contains(it.key) }
             _keyHolder.clear()
         }
     }
@@ -112,6 +98,14 @@ private class TabContainerImpl : TabContainerScope {
                     content.value.invoke()
                 }
             }
+        }
+    }
+}
+
+private inline fun <T> MutableIterator<T>.removeIf(predicate: (T) -> Boolean) {
+    while (hasNext()) {
+        if (predicate(next())) {
+            remove()
         }
     }
 }
