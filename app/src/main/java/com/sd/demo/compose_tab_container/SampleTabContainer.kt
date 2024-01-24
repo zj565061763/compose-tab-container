@@ -70,7 +70,13 @@ private fun Tabs(
         tab(TabType.Video) {
             TabContent(TabType.Video)
         }
-        tab(TabType.Me, display = { content, selected -> if (selected) content() }) {
+        tab(
+            key = TabType.Me,
+            display = { content, selected ->
+                // 自定义display，每次都添加和移除可组合项
+                if (selected) content()
+            },
+        ) {
             TabContent(TabType.Me)
         }
     }
