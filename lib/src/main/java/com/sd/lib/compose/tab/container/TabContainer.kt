@@ -122,11 +122,7 @@ private class TabContainerImpl : TabContainerScope {
 private val DefaultDisplay: TabDisplay = { content: @Composable () -> Unit, selected: Boolean ->
     Box(
         modifier = Modifier.graphicsLayer {
-            if (selected) {
-                this.scaleX = 1f
-            } else {
-                this.scaleX = 0f
-            }
+            this.scaleX = if (selected) 1f else 0f
         }
     ) {
         content()
