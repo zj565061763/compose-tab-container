@@ -44,21 +44,35 @@ private fun Content() {
     var selectedTab by remember { mutableStateOf(TabType.Home) }
 
     Column(modifier = Modifier.fillMaxSize()) {
-        TabContainer(
-            selectedKey = selectedTab,
+        Tabs(
+            selectedTab = selectedTab,
             modifier = Modifier.weight(1f),
-        ) {
-            tab(TabType.Home) {
-                TabContent(TabType.Home)
-            }
-            tab(TabType.Video) {
-                TabContent(TabType.Video)
-            }
-            tab(TabType.Me, display = { content, selected -> if (selected) content() }) {
-                TabContent(TabType.Me)
-            }
+        )
+        BottomNavigation(
+            selectedTab = selectedTab,
+            onClickTab = { selectedTab = it },
+        )
+    }
+}
+
+@Composable
+private fun Tabs(
+    selectedTab: TabType,
+    modifier: Modifier = Modifier,
+) {
+    TabContainer(
+        selectedKey = selectedTab,
+        modifier = modifier.fillMaxSize(),
+    ) {
+        tab(TabType.Home) {
+            TabContent(TabType.Home)
         }
-        BottomNavigation(selectedTab) { selectedTab = it }
+        tab(TabType.Video) {
+            TabContent(TabType.Video)
+        }
+        tab(TabType.Me, display = { content, selected -> if (selected) content() }) {
+            TabContent(TabType.Me)
+        }
     }
 }
 
@@ -79,6 +93,9 @@ private fun TabContent(
     }
 }
 
+/**
+ * 底部导航
+ */
 @Composable
 private fun BottomNavigation(
     selectedTab: TabType,
