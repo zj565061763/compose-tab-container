@@ -6,7 +6,7 @@ plugins {
 
 val libGroupId = "com.sd.lib.android"
 val libArtifactId = "compose-tab-container"
-val libVersionName = "1.0.0-alpha01"
+val libVersionName = "1.0.0-beta01"
 
 android {
     namespace = "com.sd.lib.compose.tab.container"
