@@ -3,7 +3,7 @@
 实现`Jetpack Compose`中`Tab`
 切换状态管理功能，详细介绍地址点击：[这里](https://juejin.cn/post/7327562275107536911)
 
-# Gradle
+# Build
 
 [![](https://jitpack.io/v/zj565061763/compose-tab-container.svg)](https://jitpack.io/#zj565061763/compose-tab-container)
 
