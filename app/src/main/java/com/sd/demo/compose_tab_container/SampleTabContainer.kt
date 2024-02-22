@@ -57,23 +57,28 @@ private fun Content() {
 
 @Composable
 private fun Tabs(
-    selectedTab: TabType,
     modifier: Modifier = Modifier,
+    selectedTab: TabType,
 ) {
+    // Tab容器
     TabContainer(
+        // 当前选中的Tab类型
         selectedKey = selectedTab,
         modifier = modifier.fillMaxSize(),
     ) {
+        // 设置Tab类型对应的UI
         tab(TabType.Home) {
             TabContent(TabType.Home)
         }
+
         tab(TabType.Video) {
             TabContent(TabType.Video)
         }
+
         tab(
             key = TabType.Me,
             display = { content, selected ->
-                // 自定义display，每次都添加和移除可组合项
+                // 自定义display，选中的时候才添加可组合项
                 if (selected) content()
             },
         ) {
