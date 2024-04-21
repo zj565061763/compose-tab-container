@@ -59,6 +59,26 @@ private class TabContainerImpl(
         }
     }
 
+    override fun tab(
+        key: Any,
+        display: TabDisplay?,
+        content: @Composable () -> Unit,
+    ) {
+        check(_config) { "Config not started." }
+
+        if (checkKey) {
+            _keys.remove(key)
+        }
+
+        val info = _store[key]
+        if (info == null) {
+            _store[key] = TabInfo(display = display, content = content)
+        } else {
+            info.display = display
+            info.content = content
+        }
+    }
+
     private fun checkConfig() {
         if (_config) {
             _config = false
@@ -77,26 +97,6 @@ private class TabContainerImpl(
                     this.content.value = info.content
                 }
             }
-        }
-    }
-
-    override fun tab(
-        key: Any,
-        display: TabDisplay?,
-        content: @Composable () -> Unit,
-    ) {
-        check(_config) { "Config not started." }
-
-        if (checkKey) {
-            _keys.remove(key)
-        }
-
-        val info = _store[key]
-        if (info == null) {
-            _store[key] = TabInfo(display = display, content = content)
-        } else {
-            info.display = display
-            info.content = content
         }
     }
 
