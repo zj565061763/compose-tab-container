@@ -57,6 +57,27 @@ private class TabContainerImpl : TabContainerScope {
         }
     }
 
+    private fun checkConfig() {
+        if (_config) {
+            _config = false
+
+            if (_checkKey) {
+                _keys.forEach { key ->
+                    _store.remove(key)
+                    _activeTabs.remove(key)
+                }
+            }
+
+            _activeTabs.forEach { active ->
+                val info = checkNotNull(_store[active.key])
+                active.value.apply {
+                    this.display.value = info.display
+                    this.content.value = info.content
+                }
+            }
+        }
+    }
+
     override fun tab(
         key: Any,
         display: TabDisplay?,
@@ -80,24 +101,7 @@ private class TabContainerImpl : TabContainerScope {
     @Composable
     fun Content(selectedKey: Any) {
         SideEffect {
-            if (_config) {
-                _config = false
-
-                if (_checkKey) {
-                    _keys.forEach { key ->
-                        _store.remove(key)
-                        _activeTabs.remove(key)
-                    }
-                }
-
-                _activeTabs.forEach { active ->
-                    val info = checkNotNull(_store[active.key])
-                    active.value.apply {
-                        this.display.value = info.display
-                        this.content.value = info.content
-                    }
-                }
-            }
+            checkConfig()
         }
 
         LaunchedEffect(selectedKey) {
