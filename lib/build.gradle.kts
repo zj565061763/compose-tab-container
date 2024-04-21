@@ -6,13 +6,13 @@ plugins {
 
 val libGroupId = "com.sd.lib.android"
 val libArtifactId = "compose-tab-container"
-val libVersionName = "1.0.0-beta03"
+val libVersion = "1.0.0-beta03"
 
 android {
     namespace = "com.sd.lib.compose.tab.container"
     compileSdk = libs.versions.androidCompileSdk.get().toInt()
     defaultConfig {
-        minSdk = libs.versions.androidMinSdk.get().toInt()
+        minSdk = 21
     }
 
     buildFeatures {
@@ -46,7 +46,7 @@ publishing {
         create<MavenPublication>("release") {
             groupId = libGroupId
             artifactId = libArtifactId
-            version = libVersionName
+            version = libVersion
 
             afterEvaluate {
                 from(components["release"])
