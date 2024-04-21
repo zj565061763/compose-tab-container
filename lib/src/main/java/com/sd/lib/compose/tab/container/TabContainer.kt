@@ -40,7 +40,7 @@ interface TabContainerScope {
 }
 
 private class TabContainerImpl : TabContainerScope {
-    private val _store: MutableMap<Any, TabInfo> = hashMapOf()
+    private val _store: MutableMap<Any, TabInfo> = mutableMapOf()
     private val _activeTabs: MutableMap<Any, TabState> = mutableStateMapOf()
 
     private var _config = false
