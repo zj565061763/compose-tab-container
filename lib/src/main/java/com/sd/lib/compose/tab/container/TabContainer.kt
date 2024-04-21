@@ -19,8 +19,10 @@ fun TabContainer(
     checkKey: Boolean = false,
     apply: TabContainerScope.() -> Unit,
 ) {
-    val container = remember { TabContainerImpl() }.apply {
-        startConfig(checkKey)
+    val container = remember(checkKey) {
+        TabContainerImpl(checkKey)
+    }.apply {
+        startConfig()
         apply()
     }
 
@@ -39,18 +41,18 @@ interface TabContainerScope {
     )
 }
 
-private class TabContainerImpl : TabContainerScope {
+private class TabContainerImpl(
+    private val checkKey: Boolean,
+) : TabContainerScope {
     private val _store: MutableMap<Any, TabInfo> = mutableMapOf()
     private val _activeTabs: MutableMap<Any, TabState> = mutableStateMapOf()
 
     private var _config = false
 
-    private var _checkKey = false
     private val _keys: MutableSet<Any> = mutableSetOf()
 
-    fun startConfig(checkKey: Boolean) {
+    fun startConfig() {
         _config = true
-        _checkKey = checkKey
         if (checkKey) {
             _keys.clear()
             _keys.addAll(_store.keys)
@@ -61,7 +63,7 @@ private class TabContainerImpl : TabContainerScope {
         if (_config) {
             _config = false
 
-            if (_checkKey) {
+            if (checkKey) {
                 _keys.forEach { key ->
                     _store.remove(key)
                     _activeTabs.remove(key)
@@ -85,7 +87,7 @@ private class TabContainerImpl : TabContainerScope {
     ) {
         check(_config) { "Config not started." }
 
-        if (_checkKey) {
+        if (checkKey) {
             _keys.remove(key)
         }
 
