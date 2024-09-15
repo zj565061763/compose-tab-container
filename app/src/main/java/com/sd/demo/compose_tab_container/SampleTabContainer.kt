@@ -80,13 +80,10 @@ private fun Tabs(
          TabContent(TabType.Video)
       }
 
-      // 设置tab内容
+      // 设置tab内容，自定义display，选中的时候才添加可组合项
       tab(
          key = TabType.Me,
-         // 自定义display，选中的时候才添加可组合项
-         display = { content, selected ->
-            if (selected) content()
-         },
+         display = { content, selected -> if (selected) content() },
       ) {
          TabContent(TabType.Me)
       }
