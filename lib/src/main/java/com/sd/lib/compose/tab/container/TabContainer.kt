@@ -12,18 +12,21 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.graphicsLayer
 
+/**
+ * tab容器，根据选中的[selectedKey]展示对应的tab
+ */
 @Composable
 fun TabContainer(
    modifier: Modifier = Modifier,
    selectedKey: Any,
-   checkKey: Boolean = false,
    apply: TabContainerScope.() -> Unit,
 ) {
-   val container = remember(checkKey) {
-      TabContainerImpl(checkKey)
+   val container = remember {
+      TabContainerImpl()
    }.apply {
       startConfig()
       apply()
+      stopConfig()
    }
 
    Box(modifier = modifier) {
@@ -31,65 +34,81 @@ fun TabContainer(
    }
 }
 
-typealias TabDisplay = @Composable (content: @Composable () -> Unit, selected: Boolean) -> Unit
-
 interface TabContainerScope {
+   /**
+    * 注册tab
+    * @param key tab对应的key
+    * @param display [TabDisplay]
+    * @param eager 是否立即加载tab内容
+    * @param content tab内容
+    */
    fun tab(
       key: Any,
-      display: TabDisplay? = null,
+      display: TabDisplay = DefaultDisplay,
+      eager: Boolean = false,
       content: @Composable () -> Unit,
    )
 }
 
-private class TabContainerImpl(
-   private val checkKey: Boolean,
-) : TabContainerScope {
+/**
+ * 当选中状态变化时，如何显示隐藏tab，默认实现[DefaultDisplay]
+ */
+typealias TabDisplay = @Composable (content: @Composable () -> Unit, selected: Boolean) -> Unit
+
+private val DefaultDisplay: TabDisplay = { content: @Composable () -> Unit, selected: Boolean ->
+   Box(
+      modifier = Modifier.graphicsLayer {
+         val scale = if (selected) 1f else 0f
+         this.scaleX = scale
+         this.scaleY = scale
+      }
+   ) {
+      content()
+   }
+}
+
+private class TabContainerImpl : TabContainerScope {
    private val _store: MutableMap<Any, TabInfo> = mutableMapOf()
    private val _activeTabs: MutableMap<Any, TabState> = mutableStateMapOf()
 
-   private var _config = false
-
-   private val _keys: MutableSet<Any> = mutableSetOf()
+   private var _configState = ConfigState.None
 
    fun startConfig() {
-      _config = true
-      if (checkKey) {
-         _keys.clear()
-         _keys.addAll(_store.keys)
+      if (_configState == ConfigState.None) {
+         _configState = ConfigState.Config
+      }
+   }
+
+   fun stopConfig() {
+      if (_configState == ConfigState.Config) {
+         _configState = ConfigState.ConfigFinish
       }
    }
 
    override fun tab(
       key: Any,
-      display: TabDisplay?,
+      display: TabDisplay,
+      eager: Boolean,
       content: @Composable () -> Unit,
    ) {
-      check(_config) { "Config not started." }
+      if (_configState == ConfigState.Config) {
+         val info = _store[key]
+         if (info == null) {
+            _store[key] = TabInfo(display, content)
+         } else {
+            info.display = display
+            info.content = content
+         }
 
-      if (checkKey) {
-         _keys.remove(key)
-      }
-
-      val info = _store[key]
-      if (info == null) {
-         _store[key] = TabInfo(display = display, content = content)
-      } else {
-         info.display = display
-         info.content = content
+         if (eager) {
+            activeTab(key)
+         }
       }
    }
 
    private fun checkConfig() {
-      if (_config) {
-         _config = false
-
-         if (checkKey) {
-            _keys.forEach { key ->
-               _store.remove(key)
-               _activeTabs.remove(key)
-            }
-         }
-
+      if (_configState == ConfigState.ConfigFinish) {
+         _configState = ConfigState.None
          _activeTabs.forEach { active ->
             val info = checkNotNull(_store[active.key])
             active.value.apply {
@@ -100,6 +119,16 @@ private class TabContainerImpl(
       }
    }
 
+   private fun activeTab(key: Any) {
+      if (_activeTabs[key] == null) {
+         val info = checkNotNull(_store[key]) { "Key $key was not found." }
+         _activeTabs[key] = TabState(
+            display = mutableStateOf(info.display),
+            content = mutableStateOf(info.content),
+         )
+      }
+   }
+
    @Composable
    fun Content(selectedKey: Any) {
       SideEffect {
@@ -107,40 +136,30 @@ private class TabContainerImpl(
       }
 
       LaunchedEffect(selectedKey) {
-         if (!_activeTabs.containsKey(selectedKey)) {
-            val info = checkNotNull(_store[selectedKey]) { "Key $selectedKey was not found." }
-            _activeTabs[selectedKey] = TabState(
-               display = mutableStateOf(info.display),
-               content = mutableStateOf(info.content),
-            )
-         }
+         activeTab(selectedKey)
       }
 
       for ((key, state) in _activeTabs) {
          key(key) {
-            val display = state.display.value ?: DefaultDisplay
+            val display = state.display.value
             display(state.content.value, key == selectedKey)
          }
       }
    }
-}
 
-private val DefaultDisplay: TabDisplay = { content: @Composable () -> Unit, selected: Boolean ->
-   Box(
-      modifier = Modifier.graphicsLayer {
-         this.scaleX = if (selected) 1f else 0f
-      }
-   ) {
-      content()
+   enum class ConfigState {
+      None,
+      Config,
+      ConfigFinish,
    }
 }
 
 private class TabInfo(
-   var display: TabDisplay?,
+   var display: TabDisplay,
    var content: @Composable () -> Unit,
 )
 
 private class TabState(
-   val display: MutableState<TabDisplay?>,
+   val display: MutableState<TabDisplay>,
    val content: MutableState<@Composable () -> Unit>,
 )
