@@ -36,10 +36,10 @@ fun TabContainer(
 
 interface TabContainerScope {
    /**
-    * 注册tab
+    * 设置tab内容
     * @param key tab对应的key
     * @param display [TabDisplay]
-    * @param eager 是否立即加载tab内容
+    * @param eager 是否提前加载tab
     * @param content tab内容
     */
    fun tab(

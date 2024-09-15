@@ -34,13 +34,14 @@ class SampleTabContainer : ComponentActivity() {
 
 private enum class TabType {
    Home,
+   Live,
    Video,
    Me,
 }
 
 @Composable
 private fun Content() {
-   /** 当前选中的Tab */
+   // 当前选中的Tab
    var selectedTab by remember { mutableStateOf(TabType.Home) }
 
    Column(modifier = Modifier.fillMaxSize()) {
@@ -60,21 +61,26 @@ private fun Tabs(
    modifier: Modifier = Modifier,
    selectedTab: TabType,
 ) {
-   // Tab容器
    TabContainer(
-      // 当前选中的Tab类型
       selectedKey = selectedTab,
       modifier = modifier.fillMaxSize(),
    ) {
-      // 设置Tab类型对应的UI
+      // 设置tab内容
       tab(TabType.Home) {
          TabContent(TabType.Home)
       }
 
-      tab(TabType.Video) {
+      // 设置tab内容
+      tab(TabType.Live) {
+         TabContent(TabType.Live)
+      }
+
+      // 设置tab内容
+      tab(TabType.Video, eager = true) {
          TabContent(TabType.Video)
       }
 
+      // 设置tab内容
       tab(
          key = TabType.Me,
          display = { content, selected ->
