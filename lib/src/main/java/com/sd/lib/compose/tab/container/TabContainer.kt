@@ -106,19 +106,6 @@ private class TabContainerImpl : TabContainerScope {
       }
    }
 
-   private fun checkConfig() {
-      if (_configState == ConfigState.ConfigFinish) {
-         _configState = ConfigState.None
-         _activeTabs.forEach { active ->
-            val info = checkNotNull(_store[active.key])
-            active.value.apply {
-               this.display.value = info.display
-               this.content.value = info.content
-            }
-         }
-      }
-   }
-
    private fun activeTab(key: Any) {
       if (_activeTabs[key] == null) {
          val info = checkNotNull(_store[key]) { "Key $key was not found." }
@@ -132,7 +119,13 @@ private class TabContainerImpl : TabContainerScope {
    @Composable
    fun Content(selectedKey: Any) {
       SideEffect {
-         checkConfig()
+         if (_configState == ConfigState.ConfigFinish) {
+            _configState = ConfigState.None
+            for ((key, state) in _activeTabs) {
+               val info = checkNotNull(_store[key])
+               state.update(info)
+            }
+         }
       }
 
       LaunchedEffect(selectedKey) {
@@ -162,4 +155,9 @@ private class TabInfo(
 private class TabState(
    val display: MutableState<TabDisplay>,
    val content: MutableState<@Composable () -> Unit>,
-)
+) {
+   fun update(info: TabInfo) {
+      display.value = info.display
+      content.value = info.content
+   }
+}
