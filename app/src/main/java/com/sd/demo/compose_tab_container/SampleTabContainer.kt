@@ -75,7 +75,7 @@ private fun Tabs(
          TabContent(TabType.Live)
       }
 
-      // 设置tab内容
+      // 设置tab内容，eager = true，提前加载
       tab(TabType.Video, eager = true) {
          TabContent(TabType.Video)
       }
