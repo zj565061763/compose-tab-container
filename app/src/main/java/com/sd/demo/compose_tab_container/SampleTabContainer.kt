@@ -83,8 +83,8 @@ private fun Tabs(
       // 设置tab内容
       tab(
          key = TabType.Me,
+         // 自定义display，选中的时候才添加可组合项
          display = { content, selected ->
-            // 自定义display，选中的时候才添加可组合项
             if (selected) content()
          },
       ) {
