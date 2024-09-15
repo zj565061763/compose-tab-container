@@ -10,6 +10,7 @@
 // Tab类型
 private enum class TabType {
    Home,
+   Live,
    Video,
    Me,
 }
@@ -19,27 +20,29 @@ private fun Tabs(
    modifier: Modifier = Modifier,
    selectedTab: TabType,
 ) {
-   // Tab容器
    TabContainer(
-      // 当前选中的Tab类型
       selectedKey = selectedTab,
       modifier = modifier.fillMaxSize(),
    ) {
-      // 设置Tab类型对应的UI
+      // 设置tab内容
       tab(TabType.Home) {
          TabContent(TabType.Home)
       }
 
-      tab(TabType.Video) {
+      // 设置tab内容
+      tab(TabType.Live) {
+         TabContent(TabType.Live)
+      }
+
+      // 设置tab内容，eager = true，提前加载
+      tab(TabType.Video, eager = true) {
          TabContent(TabType.Video)
       }
 
+      // 设置tab内容，自定义display，选中的时候才添加可组合项
       tab(
          key = TabType.Me,
-         display = { content, selected ->
-            // 自定义display，选中的时候才添加可组合项
-            if (selected) content()
-         },
+         display = { content, selected -> if (selected) content() },
       ) {
          TabContent(TabType.Me)
       }
