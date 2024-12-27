@@ -11,8 +11,9 @@ fun TabContainer(
   selectedKey: Any,
   content: @Composable TabContainerScope.() -> Unit,
 ) {
-  val state = remember { TabContainerState() }.apply { selectKey(selectedKey) }
+  val state = remember { TabContainerState() }
   remember(state) { TabContainerScope(state) }.content()
+  state.selectKey(selectedKey)
   Box(modifier = modifier) {
     state.Content()
   }
