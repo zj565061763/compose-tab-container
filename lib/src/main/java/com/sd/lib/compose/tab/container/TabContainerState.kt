@@ -54,11 +54,19 @@ internal class TabContainerState {
   fun Content() {
     for ((tab, state) in _activeTabs) {
       key(tab) {
-        val content = state.content.value
-        val display = state.display.value
-        display(content, tab == _selectedTab)
+        TabContent(
+          tab = tab,
+          state = state,
+        )
       }
     }
+  }
+
+  @Composable
+  private fun TabContent(tab: Any, state: TabState) {
+    val content = state.content.value
+    val display = state.display.value
+    display(content, tab == _selectedTab)
   }
 
   @Stable
