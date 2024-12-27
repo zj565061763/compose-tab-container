@@ -14,49 +14,49 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 
 internal class TabContainerState {
-  private var _selectedKey by mutableStateOf<Any?>(null)
+  private var _selectedTab by mutableStateOf<Any?>(null)
   private val _activeTabs = mutableStateMapOf<Any, TabState>()
 
-  fun selectKey(key: Any) {
-    _selectedKey = key
+  fun selectTab(tab: Any) {
+    _selectedTab = tab
   }
 
   @Composable
   fun Tab(
-    key: Any,
+    tab: Any,
     eager: Boolean,
     display: TabDisplay,
     content: @Composable () -> Unit,
   ) {
-    val state = remember(key) { TabState() }.apply {
+    val state = remember(tab) { TabState() }.apply {
       this.display.value = display
       this.content.value = content
     }
 
     SideEffect {
-      _activeTabs[key]?.update(state)
+      _activeTabs[tab]?.update(state)
     }
 
-    if (eager || key == _selectedKey) {
-      LaunchedEffect(key, state) {
-        _activeTabs[key] = state
+    if (eager || tab == _selectedTab) {
+      LaunchedEffect(tab, state) {
+        _activeTabs[tab] = state
       }
     }
 
-    DisposableEffect(key) {
+    DisposableEffect(tab) {
       onDispose {
-        _activeTabs.remove(key)
+        _activeTabs.remove(tab)
       }
     }
   }
 
   @Composable
   fun Content() {
-    for ((key, state) in _activeTabs) {
-      key(key) {
+    for ((tab, state) in _activeTabs) {
+      key(tab) {
         val content = state.content.value
         val display = state.display.value
-        display(content, key == _selectedKey)
+        display(content, tab == _selectedTab)
       }
     }
   }

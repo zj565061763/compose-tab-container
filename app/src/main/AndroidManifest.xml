@@ -22,7 +22,7 @@
             </intent-filter>
         </activity>
 
-        <activity android:name="com.sd.demo.compose_tab_container.SampleTabContainer" />
+        <activity android:name="com.sd.demo.compose_tab_container.Sample" />
 
     </application>
 

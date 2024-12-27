@@ -7,13 +7,13 @@ import androidx.compose.ui.Modifier
 
 @Composable
 fun TabContainer(
+  selectedTab: Any,
   modifier: Modifier = Modifier,
-  selectedKey: Any,
   content: @Composable TabContainerScope.() -> Unit,
 ) {
   val state = remember { TabContainerState() }
   remember(state) { TabContainerScope(state) }.content()
-  state.selectKey(selectedKey)
+  state.selectTab(selectedTab)
   Box(modifier = modifier) {
     state.Content()
   }
@@ -24,13 +24,13 @@ class TabContainerScope internal constructor(
 ) {
   @Composable
   fun Tab(
-    key: Any,
+    tab: Any,
     eager: Boolean = false,
     display: TabDisplay = DefaultTabDisplay,
     content: @Composable () -> Unit,
   ) {
     state.Tab(
-      key = key,
+      tab = tab,
       eager = eager,
       display = display,
       content = content,

@@ -26,7 +26,7 @@ class MainActivity : ComponentActivity() {
       AppTheme {
         Content(
           listActivity = listOf(
-            SampleTabContainer::class.java,
+            Sample::class.java,
           ),
           onClickActivity = {
             startActivity(Intent(this, it))

@@ -21,7 +21,7 @@ import androidx.compose.ui.Modifier
 import com.sd.demo.compose_tab_container.ui.theme.AppTheme
 import com.sd.lib.compose.tab.container.TabContainer
 
-class SampleTabContainer : ComponentActivity() {
+class Sample : ComponentActivity() {
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     setContent {
@@ -62,7 +62,7 @@ private fun Tabs(
   selectedTab: TabType,
 ) {
   TabContainer(
-    selectedKey = selectedTab,
+    selectedTab = selectedTab,
     modifier = modifier.fillMaxSize(),
   ) {
     // 设置tab内容
@@ -82,7 +82,7 @@ private fun Tabs(
 
     // 设置tab内容，自定义display，选中的时候才添加可组合项
     Tab(
-      key = TabType.Me,
+      tab = TabType.Me,
       display = { content, selected -> if (selected) content() },
     ) {
       TabContent(TabType.Me)
