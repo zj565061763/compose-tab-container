@@ -22,89 +22,89 @@ import com.sd.demo.compose_tab_container.ui.theme.AppTheme
 import com.sd.lib.compose.tab.container.TabContainer
 
 class SampleTabContainer : ComponentActivity() {
-   override fun onCreate(savedInstanceState: Bundle?) {
-      super.onCreate(savedInstanceState)
-      setContent {
-         AppTheme {
-            Content()
-         }
+  override fun onCreate(savedInstanceState: Bundle?) {
+    super.onCreate(savedInstanceState)
+    setContent {
+      AppTheme {
+        Content()
       }
-   }
+    }
+  }
 }
 
 private enum class TabType {
-   Home,
-   Live,
-   Video,
-   Me,
+  Home,
+  Live,
+  Video,
+  Me,
 }
 
 @Composable
 private fun Content() {
-   // 当前选中的Tab
-   var selectedTab by remember { mutableStateOf(TabType.Home) }
+  // 当前选中的Tab
+  var selectedTab by remember { mutableStateOf(TabType.Home) }
 
-   Column(modifier = Modifier.fillMaxSize()) {
-      Tabs(
-         selectedTab = selectedTab,
-         modifier = Modifier.weight(1f),
-      )
-      BottomNavigation(
-         selectedTab = selectedTab,
-         onClickTab = { selectedTab = it },
-      )
-   }
+  Column(modifier = Modifier.fillMaxSize()) {
+    Tabs(
+      selectedTab = selectedTab,
+      modifier = Modifier.weight(1f),
+    )
+    BottomNavigation(
+      selectedTab = selectedTab,
+      onClickTab = { selectedTab = it },
+    )
+  }
 }
 
 @Composable
 private fun Tabs(
-   modifier: Modifier = Modifier,
-   selectedTab: TabType,
+  modifier: Modifier = Modifier,
+  selectedTab: TabType,
 ) {
-   TabContainer(
-      selectedKey = selectedTab,
-      modifier = modifier.fillMaxSize(),
-   ) {
-      // 设置tab内容
-      tab(TabType.Home) {
-         TabContent(TabType.Home)
-      }
+  TabContainer(
+    selectedKey = selectedTab,
+    modifier = modifier.fillMaxSize(),
+  ) {
+    // 设置tab内容
+    tab(TabType.Home) {
+      TabContent(TabType.Home)
+    }
 
-      // 设置tab内容
-      tab(TabType.Live) {
-         TabContent(TabType.Live)
-      }
+    // 设置tab内容
+    tab(TabType.Live) {
+      TabContent(TabType.Live)
+    }
 
-      // 设置tab内容，eager = true，提前加载
-      tab(TabType.Video, eager = true) {
-         TabContent(TabType.Video)
-      }
+    // 设置tab内容，eager = true，提前加载
+    tab(TabType.Video, eager = true) {
+      TabContent(TabType.Video)
+    }
 
-      // 设置tab内容，自定义display，选中的时候才添加可组合项
-      tab(
-         key = TabType.Me,
-         display = { content, selected -> if (selected) content() },
-      ) {
-         TabContent(TabType.Me)
-      }
-   }
+    // 设置tab内容，自定义display，选中的时候才添加可组合项
+    tab(
+      key = TabType.Me,
+      display = { content, selected -> if (selected) content() },
+    ) {
+      TabContent(TabType.Me)
+    }
+  }
 }
 
 @Composable
 private fun TabContent(
-   tabType: TabType,
-   modifier: Modifier = Modifier,
+  tabType: TabType,
+  modifier: Modifier = Modifier,
 ) {
-   DisposableEffect(tabType) {
-      logMsg { "tab:${tabType.name}" }
-      onDispose { logMsg { "tab:${tabType.name} onDispose" } }
-   }
-   Box(
-      modifier = modifier.fillMaxSize(),
-      contentAlignment = Alignment.Center,
-   ) {
-      Text(text = tabType.name)
-   }
+  DisposableEffect(tabType) {
+    logMsg { "tab:${tabType.name}" }
+    onDispose { logMsg { "tab:${tabType.name} onDispose" } }
+  }
+  Box(
+    modifier = modifier.fillMaxSize(),
+    contentAlignment = Alignment.Center,
+  ) {
+    Text(text = tabType.name)
+  }
 }
 
 /**
@@ -112,19 +112,19 @@ private fun TabContent(
  */
 @Composable
 private fun BottomNavigation(
-   selectedTab: TabType,
-   onClickTab: (TabType) -> Unit,
+  selectedTab: TabType,
+  onClickTab: (TabType) -> Unit,
 ) {
-   val tabs = remember { TabType.entries.toList() }
-   NavigationBar {
-      for (tab in tabs) {
-         key(tab) {
-            NavigationBarItem(
-               selected = selectedTab == tab,
-               onClick = { onClickTab(tab) },
-               icon = { Text(text = tab.name) },
-            )
-         }
+  val tabs = remember { TabType.entries.toList() }
+  NavigationBar {
+    for (tab in tabs) {
+      key(tab) {
+        NavigationBarItem(
+          selected = selectedTab == tab,
+          onClick = { onClickTab(tab) },
+          icon = { Text(text = tab.name) },
+        )
       }
-   }
+    }
+  }
 }
