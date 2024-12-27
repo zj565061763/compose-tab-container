@@ -12,7 +12,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -121,13 +120,11 @@ private fun BottomNavigation(
   val tabs = remember { TabType.entries.toList() }
   NavigationBar {
     for (tab in tabs) {
-      key(tab) {
-        NavigationBarItem(
-          selected = selectedTab == tab,
-          onClick = { onClickTab(tab) },
-          icon = { Text(text = tab.name) },
-        )
-      }
+      NavigationBarItem(
+        selected = selectedTab == tab,
+        onClick = { onClickTab(tab) },
+        icon = { Text(text = tab.name) },
+      )
     }
   }
 }
