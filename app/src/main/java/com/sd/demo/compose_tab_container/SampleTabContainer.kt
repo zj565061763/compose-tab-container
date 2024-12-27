@@ -66,22 +66,22 @@ private fun Tabs(
     modifier = modifier.fillMaxSize(),
   ) {
     // 设置tab内容
-    tab(TabType.Home) {
+    Tab(TabType.Home) {
       TabContent(TabType.Home)
     }
 
     // 设置tab内容
-    tab(TabType.Live) {
+    Tab(TabType.Live) {
       TabContent(TabType.Live)
     }
 
     // 设置tab内容，eager = true，提前加载
-    tab(TabType.Video, eager = true) {
+    Tab(TabType.Video, eager = true) {
       TabContent(TabType.Video)
     }
 
     // 设置tab内容，自定义display，选中的时候才添加可组合项
-    tab(
+    Tab(
       key = TabType.Me,
       display = { content, selected -> if (selected) content() },
     ) {
