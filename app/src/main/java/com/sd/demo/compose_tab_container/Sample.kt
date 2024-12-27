@@ -99,8 +99,6 @@ private fun TabContent(
     onDispose { logMsg { "tab:${tabType.name} onDispose" } }
   }
 
-  logMsg { "compose tab:${tabType.name}" }
-
   Box(
     modifier = modifier.fillMaxSize(),
     contentAlignment = Alignment.Center,
@@ -117,9 +115,8 @@ private fun BottomNavigation(
   selectedTab: TabType,
   onClickTab: (TabType) -> Unit,
 ) {
-  val tabs = remember { TabType.entries.toList() }
   NavigationBar {
-    for (tab in tabs) {
+    for (tab in TabType.entries) {
       NavigationBarItem(
         selected = selectedTab == tab,
         onClick = { onClickTab(tab) },
