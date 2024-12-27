@@ -2,10 +2,10 @@ package com.sd.lib.compose.tab.container
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.SideEffect
-import androidx.compose.runtime.Stable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableStateMapOf
@@ -14,7 +14,7 @@ import androidx.compose.runtime.setValue
 
 internal class TabContainerState {
   private var _selectedTab by mutableStateOf<Any?>(null)
-  private val _activeTabs = mutableStateMapOf<Any, TabState>()
+  private val _activeTabs = mutableStateMapOf<Any, MutableState<TabState>>()
 
   fun selectTab(tab: Any) {
     _selectedTab = tab
@@ -28,18 +28,13 @@ internal class TabContainerState {
     content: @Composable () -> Unit,
   ) {
     SideEffect {
-      _activeTabs[tab]?.apply {
-        this.display.value = display
-        this.content.value = content
-      }
+      _activeTabs[tab]?.value = TabState(display, content)
     }
 
     if (eager || tab == _selectedTab) {
       LaunchedEffect(tab) {
-        _activeTabs[tab] = TabState(
-          display = mutableStateOf(display),
-          content = mutableStateOf(content),
-        )
+        val tabState = TabState(display, content)
+        _activeTabs[tab] = mutableStateOf(tabState)
       }
     }
 
@@ -56,7 +51,7 @@ internal class TabContainerState {
       key(tab) {
         TabContent(
           tab = tab,
-          state = state,
+          state = state.value,
         )
       }
     }
@@ -64,14 +59,14 @@ internal class TabContainerState {
 
   @Composable
   private fun TabContent(tab: Any, state: TabState) {
-    val content = state.content.value
-    val display = state.display.value
+    val content = state.content
+    val display = state.display
     display(content, tab == _selectedTab)
   }
 
-  @Stable
+  @Immutable
   private class TabState(
-    val display: MutableState<TabDisplay>,
-    val content: MutableState<@Composable () -> Unit>,
+    val display: TabDisplay,
+    val content: @Composable () -> Unit,
   )
 }
