@@ -60,10 +60,10 @@ internal class TabContainerState {
       }
     }
   }
-}
 
-@Stable
-private class TabState(
-  val display: MutableState<TabDisplay>,
-  val content: MutableState<@Composable () -> Unit>,
-)
+  @Stable
+  private class TabState(
+    val display: MutableState<TabDisplay>,
+    val content: MutableState<@Composable () -> Unit>,
+  )
+}
