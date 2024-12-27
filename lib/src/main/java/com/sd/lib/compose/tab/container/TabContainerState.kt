@@ -35,8 +35,9 @@ internal class TabContainerState {
 
     if (eager || tab == _selectedTab) {
       LaunchedEffect(tab) {
-        val tabState = TabState(display, content)
-        _activeTabs[tab] = mutableStateOf(tabState)
+        if (!_activeTabs.containsKey(tab)) {
+          _activeTabs[tab] = mutableStateOf(TabState(display, content))
+        }
       }
     }
 
