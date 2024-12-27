@@ -2,6 +2,7 @@ package com.sd.lib.compose.tab.container
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 
@@ -13,7 +14,11 @@ fun TabContainer(
 ) {
   val state = remember { TabContainerState() }
   remember(state) { TabContainerScope(state) }.content()
-  state.selectTab(selectedTab)
+
+  LaunchedEffect(state, selectedTab) {
+    state.selectTab(selectedTab)
+  }
+
   Box(modifier = modifier) {
     state.Content()
   }
