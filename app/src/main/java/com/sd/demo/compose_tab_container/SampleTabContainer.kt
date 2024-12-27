@@ -99,6 +99,9 @@ private fun TabContent(
     logMsg { "tab:${tabType.name}" }
     onDispose { logMsg { "tab:${tabType.name} onDispose" } }
   }
+
+  logMsg { "composed tab:${tabType.name}" }
+
   Box(
     modifier = modifier.fillMaxSize(),
     contentAlignment = Alignment.Center,
