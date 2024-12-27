@@ -21,14 +21,7 @@ fun TabContainer(
   selectedKey: Any,
   apply: TabContainerScope.() -> Unit,
 ) {
-  val container = remember {
-    TabContainerImpl()
-  }.apply {
-    startConfig()
-    apply()
-    stopConfig()
-  }
-
+  val container = remember { TabContainerImpl() }.apply(apply)
   Box(modifier = modifier) {
     container.Content(selectedKey)
   }
@@ -71,38 +64,22 @@ private class TabContainerImpl : TabContainerScope {
   private val _store: MutableMap<Any, TabInfo> = mutableMapOf()
   private val _activeTabs: MutableMap<Any, TabState> = mutableStateMapOf()
 
-  private var _configState = ConfigState.None
-
-  fun startConfig() {
-    if (_configState == ConfigState.None) {
-      _configState = ConfigState.Config
-    }
-  }
-
-  fun stopConfig() {
-    if (_configState == ConfigState.Config) {
-      _configState = ConfigState.ConfigFinish
-    }
-  }
-
   override fun tab(
     key: Any,
     display: TabDisplay,
     eager: Boolean,
     content: @Composable () -> Unit,
   ) {
-    if (_configState == ConfigState.Config) {
-      val info = _store[key]
-      if (info == null) {
-        _store[key] = TabInfo(display, content)
-      } else {
-        info.display = display
-        info.content = content
-      }
+    val info = _store[key]
+    if (info == null) {
+      _store[key] = TabInfo(display, content)
+    } else {
+      info.display = display
+      info.content = content
+    }
 
-      if (eager) {
-        activeTab(key)
-      }
+    if (eager) {
+      activeTab(key)
     }
   }
 
@@ -119,12 +96,9 @@ private class TabContainerImpl : TabContainerScope {
   @Composable
   fun Content(selectedKey: Any) {
     SideEffect {
-      if (_configState == ConfigState.ConfigFinish) {
-        _configState = ConfigState.None
-        for ((key, state) in _activeTabs) {
-          val info = checkNotNull(_store[key])
-          state.update(info)
-        }
+      for ((key, state) in _activeTabs) {
+        val info = checkNotNull(_store[key])
+        state.update(info)
       }
     }
 
@@ -138,12 +112,6 @@ private class TabContainerImpl : TabContainerScope {
         display(state.content.value, key == selectedKey)
       }
     }
-  }
-
-  enum class ConfigState {
-    None,
-    Config,
-    ConfigFinish,
   }
 }
 
