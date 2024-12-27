@@ -22,6 +22,9 @@ fun TabContainer(
   apply: TabContainerScope.() -> Unit,
 ) {
   val container = remember { TabContainerImpl() }.apply(apply)
+  SideEffect {
+    container.update()
+  }
   Box(modifier = modifier) {
     container.Content(selectedKey)
   }
@@ -83,6 +86,13 @@ private class TabContainerImpl : TabContainerScope {
     }
   }
 
+  fun update() {
+    for ((key, state) in _activeTabs) {
+      val info = checkNotNull(_store[key])
+      state.update(info)
+    }
+  }
+
   private fun activeTab(key: Any) {
     if (_activeTabs[key] == null) {
       val info = checkNotNull(_store[key]) { "Key $key was not found." }
@@ -95,17 +105,9 @@ private class TabContainerImpl : TabContainerScope {
 
   @Composable
   fun Content(selectedKey: Any) {
-    SideEffect {
-      for ((key, state) in _activeTabs) {
-        val info = checkNotNull(_store[key])
-        state.update(info)
-      }
-    }
-
     LaunchedEffect(selectedKey) {
       activeTab(selectedKey)
     }
-
     for ((key, state) in _activeTabs) {
       key(key) {
         val display = state.display.value
