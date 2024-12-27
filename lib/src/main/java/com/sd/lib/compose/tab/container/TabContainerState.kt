@@ -10,7 +10,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 
 internal class TabContainerState {
@@ -28,18 +27,19 @@ internal class TabContainerState {
     display: TabDisplay,
     content: @Composable () -> Unit,
   ) {
-    val state = remember(tab) { TabState() }.apply {
-      this.display.value = display
-      this.content.value = content
-    }
-
     SideEffect {
-      _activeTabs[tab]?.update(state)
+      _activeTabs[tab]?.apply {
+        this.display.value = display
+        this.content.value = content
+      }
     }
 
     if (eager || tab == _selectedTab) {
-      LaunchedEffect(tab, state) {
-        _activeTabs[tab] = state
+      LaunchedEffect(tab) {
+        _activeTabs[tab] = TabState(
+          display = mutableStateOf(display),
+          content = mutableStateOf(content),
+        )
       }
     }
 
@@ -64,11 +64,6 @@ internal class TabContainerState {
 
 @Stable
 private class TabState(
-  val display: MutableState<TabDisplay> = mutableStateOf(DefaultTabDisplay),
-  val content: MutableState<@Composable () -> Unit> = mutableStateOf({}),
-) {
-  fun update(state: TabState) {
-    this.display.value = state.display.value
-    this.content.value = state.content.value
-  }
-}
+  val display: MutableState<TabDisplay>,
+  val content: MutableState<@Composable () -> Unit>,
+)
