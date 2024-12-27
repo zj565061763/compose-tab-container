@@ -28,7 +28,9 @@ internal class TabContainerState {
     content: @Composable () -> Unit,
   ) {
     SideEffect {
-      _activeTabs[tab]?.value = TabState(display, content)
+      _activeTabs[tab]?.apply {
+        this.value = TabState(display, content)
+      }
     }
 
     if (eager || tab == _selectedTab) {
