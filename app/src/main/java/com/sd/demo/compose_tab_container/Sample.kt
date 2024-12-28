@@ -129,6 +129,6 @@ private fun BottomNavigation(
 
 @Preview
 @Composable
-private fun PreviewTabs() {
-  Tabs(selectedTab = TabType.Home)
+private fun Preview() {
+  Content()
 }
