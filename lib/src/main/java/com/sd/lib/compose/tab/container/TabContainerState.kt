@@ -23,7 +23,7 @@ internal class TabContainerState {
   ) {
     val selected by remember(tab) { derivedStateOf { tab == _selectedTab } }
 
-    var load by remember { mutableStateOf(false) }
+    var load by remember(tab) { mutableStateOf(false) }
     if (eager || selected) {
       load = true
     }
