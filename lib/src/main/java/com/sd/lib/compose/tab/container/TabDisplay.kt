@@ -10,7 +10,11 @@ import androidx.compose.ui.graphics.graphicsLayer
  */
 typealias TabDisplay = @Composable (content: @Composable () -> Unit, selected: Boolean) -> Unit
 
-internal val DefaultTabDisplay: TabDisplay = { content: @Composable () -> Unit, selected: Boolean ->
+@Composable
+internal fun DefaultTabDisplay(
+  selected: Boolean,
+  content: @Composable () -> Unit,
+) {
   Box(
     modifier = Modifier.graphicsLayer {
       val scale = if (selected) 1f else 0f

@@ -30,7 +30,7 @@ class TabContainerScope internal constructor(
   fun Tab(
     tab: Any,
     eager: Boolean = false,
-    display: TabDisplay = DefaultTabDisplay,
+    display: TabDisplay? = null,
     content: @Composable () -> Unit,
   ) {
     state.Tab(

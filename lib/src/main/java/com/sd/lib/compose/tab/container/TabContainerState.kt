@@ -18,7 +18,7 @@ internal class TabContainerState {
   fun Tab(
     tab: Any,
     eager: Boolean,
-    display: TabDisplay,
+    display: TabDisplay?,
     content: @Composable () -> Unit,
   ) {
     val selected by remember(tab) { derivedStateOf { tab == _selectedTab } }
@@ -29,7 +29,14 @@ internal class TabContainerState {
     }
 
     if (load) {
-      display(content, selected)
+      if (display != null) {
+        display(content, selected)
+      } else {
+        DefaultTabDisplay(
+          selected = selected,
+          content = content,
+        )
+      }
     }
   }
 }
