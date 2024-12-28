@@ -17,6 +17,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.Preview
 import com.sd.demo.compose_tab_container.ui.theme.AppTheme
 import com.sd.lib.compose.tab.container.TabContainer
 
@@ -124,4 +125,10 @@ private fun BottomNavigation(
       )
     }
   }
+}
+
+@Preview
+@Composable
+private fun PreviewTabs() {
+  Tabs(selectedTab = TabType.Home)
 }
