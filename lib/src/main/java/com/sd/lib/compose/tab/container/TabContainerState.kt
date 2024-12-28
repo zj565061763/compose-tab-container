@@ -6,6 +6,7 @@ import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.SideEffect
+import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableStateMapOf
@@ -54,16 +55,16 @@ internal class TabContainerState {
       key(tab) {
         TabContent(
           tab = tab,
-          tabState = state.value,
+          state = state,
         )
       }
     }
   }
 
   @Composable
-  private fun TabContent(tab: Any, tabState: TabState) {
-    val content = tabState.content
-    val display = tabState.display
+  private fun TabContent(tab: Any, state: State<TabState>) {
+    val content = state.value.content
+    val display = state.value.display
     display(content, tab == _selectedTab)
   }
 
