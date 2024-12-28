@@ -1,21 +1,14 @@
 package com.sd.lib.compose.tab.container
 
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
-import androidx.compose.runtime.Immutable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.SideEffect
-import androidx.compose.runtime.State
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.key
-import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 
 internal class TabContainerState {
   private var _selectedTab by mutableStateOf<Any?>(null)
-  private val _activeTabs = mutableStateMapOf<Any, MutableState<TabState>>()
 
   fun selectTab(tab: Any) {
     _selectedTab = tab
@@ -28,49 +21,15 @@ internal class TabContainerState {
     display: TabDisplay,
     content: @Composable () -> Unit,
   ) {
-    SideEffect {
-      _activeTabs[tab]?.apply {
-        this.value = TabState(display, content)
-      }
+    val selected by remember(tab) { derivedStateOf { tab == _selectedTab } }
+
+    var load by remember { mutableStateOf(false) }
+    if (eager || selected) {
+      load = true
     }
 
-    if (eager || tab == _selectedTab) {
-      LaunchedEffect(tab) {
-        if (!_activeTabs.containsKey(tab)) {
-          _activeTabs[tab] = mutableStateOf(TabState(display, content))
-        }
-      }
-    }
-
-    DisposableEffect(tab) {
-      onDispose {
-        _activeTabs.remove(tab)
-      }
+    if (load) {
+      display(content, selected)
     }
   }
-
-  @Composable
-  fun Content() {
-    for ((tab, state) in _activeTabs) {
-      key(tab) {
-        TabContent(
-          tab = tab,
-          state = state,
-        )
-      }
-    }
-  }
-
-  @Composable
-  private fun TabContent(tab: Any, state: State<TabState>) {
-    val content = state.value.content
-    val display = state.value.display
-    display(content, tab == _selectedTab)
-  }
-
-  @Immutable
-  private class TabState(
-    val display: TabDisplay,
-    val content: @Composable () -> Unit,
-  )
 }

@@ -8,19 +8,18 @@ import androidx.compose.ui.Modifier
 
 @Composable
 fun TabContainer(
-  selectedTab: Any,
   modifier: Modifier = Modifier,
+  selectedTab: Any,
   content: @Composable TabContainerScope.() -> Unit,
 ) {
   val state = remember { TabContainerState() }
-  remember(state) { TabContainerScope(state) }.content()
 
   LaunchedEffect(state, selectedTab) {
     state.selectTab(selectedTab)
   }
 
   Box(modifier = modifier) {
-    state.Content()
+    remember(state) { TabContainerScope(state) }.content()
   }
 }
 

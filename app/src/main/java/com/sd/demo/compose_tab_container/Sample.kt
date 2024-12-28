@@ -61,8 +61,8 @@ private fun Tabs(
   selectedTab: TabType,
 ) {
   TabContainer(
-    selectedTab = selectedTab,
     modifier = modifier.fillMaxSize(),
+    selectedTab = selectedTab,
   ) {
     // 设置tab内容
     Tab(TabType.Home) {
