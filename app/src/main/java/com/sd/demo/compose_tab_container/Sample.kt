@@ -62,7 +62,9 @@ private fun Content(
       onClickTab = { selectedTab = it },
     )
 
-    FocusDirectionView()
+    FocusDirectionView(
+      modifier = Modifier.padding(vertical = 64.dp)
+    )
   }
 }
 
