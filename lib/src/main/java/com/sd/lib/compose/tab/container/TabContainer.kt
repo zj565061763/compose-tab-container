@@ -10,9 +10,11 @@ import androidx.compose.ui.Modifier
 fun TabContainer(
   modifier: Modifier = Modifier,
   selectedTab: Any,
+  display: TabDisplay? = null,
   content: @Composable TabContainerScope.() -> Unit,
 ) {
   val state = remember { TabContainerState() }
+  state.setTabDisplay(display)
 
   LaunchedEffect(state, selectedTab) {
     state.selectTab(selectedTab)

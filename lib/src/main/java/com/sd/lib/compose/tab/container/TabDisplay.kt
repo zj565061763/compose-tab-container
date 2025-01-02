@@ -16,9 +16,7 @@ internal fun DefaultTabDisplay(
   selected: Boolean,
   content: @Composable () -> Unit,
 ) {
-  val modifier = if (selected) {
-    Modifier
-  } else {
+  val modifier = if (selected) Modifier else {
     Modifier
       .graphicsLayer {
         scaleX = 0f
