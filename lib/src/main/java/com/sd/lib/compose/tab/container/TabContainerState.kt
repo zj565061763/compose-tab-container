@@ -8,10 +8,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 
 internal class TabContainerState {
-  private var _display: TabDisplay? = null
+  private var _display by mutableStateOf<TabDisplay?>(null)
   private var _selectedTab by mutableStateOf<Any?>(null)
 
-  fun setTabDisplay(display: TabDisplay?) {
+  fun setDisplay(display: TabDisplay?) {
     _display = display
   }
 

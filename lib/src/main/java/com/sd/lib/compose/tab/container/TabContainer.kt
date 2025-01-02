@@ -14,7 +14,7 @@ fun TabContainer(
   content: @Composable TabContainerScope.() -> Unit,
 ) {
   val state = remember { TabContainerState() }
-  state.setTabDisplay(display)
+  state.setDisplay(display)
 
   LaunchedEffect(state, selectedTab) {
     state.selectTab(selectedTab)
