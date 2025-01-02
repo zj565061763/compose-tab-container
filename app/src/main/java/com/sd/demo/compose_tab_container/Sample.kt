@@ -3,9 +3,10 @@ package com.sd.demo.compose_tab_container
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Text
@@ -18,6 +19,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import com.sd.demo.compose_tab_container.ui.theme.AppTheme
 import com.sd.lib.compose.tab.container.TabContainer
 
@@ -40,19 +42,27 @@ private enum class TabType {
 }
 
 @Composable
-private fun Content() {
+private fun Content(
+  modifier: Modifier = Modifier,
+) {
   // 当前选中的Tab
   var selectedTab by remember { mutableStateOf(TabType.Home) }
 
-  Column(modifier = Modifier.fillMaxSize()) {
+  Column(
+    modifier = modifier.fillMaxSize(),
+    horizontalAlignment = Alignment.CenterHorizontally,
+  ) {
     Tabs(
-      selectedTab = selectedTab,
       modifier = Modifier.weight(1f),
+      selectedTab = selectedTab,
     )
-    BottomNavigation(
+
+    NavigationView(
       selectedTab = selectedTab,
       onClickTab = { selectedTab = it },
     )
+
+    FocusDirectionView()
   }
 }
 
@@ -100,19 +110,23 @@ private fun TabContent(
     onDispose { logMsg { "tab:${tabType.name} onDispose" } }
   }
 
-  Box(
-    modifier = modifier.fillMaxSize(),
-    contentAlignment = Alignment.Center,
+  Column(
+    modifier = modifier
+      .fillMaxSize()
+      .padding(24.dp),
+    horizontalAlignment = Alignment.CenterHorizontally,
+    verticalArrangement = Arrangement.Center,
   ) {
-    Text(text = tabType.name)
+    FocusableGrid()
+    Text(
+      text = tabType.name,
+      modifier = Modifier.padding(top = 24.dp),
+    )
   }
 }
 
-/**
- * 底部导航
- */
 @Composable
-private fun BottomNavigation(
+private fun NavigationView(
   selectedTab: TabType,
   onClickTab: (TabType) -> Unit,
 ) {
