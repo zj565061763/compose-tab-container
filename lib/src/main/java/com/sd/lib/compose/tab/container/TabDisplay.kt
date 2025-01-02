@@ -3,6 +3,7 @@ package com.sd.lib.compose.tab.container
 import androidx.compose.foundation.layout.Box
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.focusProperties
 import androidx.compose.ui.graphics.graphicsLayer
 
 /**
@@ -15,13 +16,19 @@ internal fun DefaultTabDisplay(
   selected: Boolean,
   content: @Composable () -> Unit,
 ) {
-  Box(
-    modifier = Modifier.graphicsLayer {
-      val scale = if (selected) 1f else 0f
-      this.scaleX = scale
-      this.scaleY = scale
-    }
-  ) {
+  val modifier = if (selected) {
+    Modifier
+  } else {
+    Modifier
+      .graphicsLayer {
+        scaleX = 0f
+        scaleY = 0f
+      }
+      .focusProperties {
+        canFocus = false
+      }
+  }
+  Box(modifier) {
     content()
   }
 }
